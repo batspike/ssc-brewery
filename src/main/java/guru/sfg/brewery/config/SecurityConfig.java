@@ -14,9 +14,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http
 			.authorizeRequests(authorize -> { //no authorization needed to access the following assets
-				authorize.antMatchers("/","/webjars/**","/login","/resources/**").permitAll();
-				authorize.antMatchers("/beers/find","/beers").permitAll();
-				authorize.antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll();
+				authorize
+					.antMatchers("/","/webjars/**","/login","/resources/**").permitAll()
+					.antMatchers("/beers/find","/beers").permitAll()
+					.antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
+					.mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll(); //note we use mvcMatcher; works the same
 			})
 			.authorizeRequests() //any other resource access will need authorization
 				.anyRequest().authenticated()
