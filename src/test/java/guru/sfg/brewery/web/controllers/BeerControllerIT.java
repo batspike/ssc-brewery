@@ -1,5 +1,6 @@
 package guru.sfg.brewery.web.controllers;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -40,4 +41,14 @@ class BeerControllerIT extends BaseIT {
 		mockMvc.perform(get("/beers/find"))
 		.andExpect(status().isOk());
 	}
+	
+    @Test
+    // using anonymous login, since our config permitAll access to /beers/find, this should pass
+    void findBeersWithAnonymous() throws Exception{
+        mockMvc.perform(get("/beers/find").with(anonymous()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("beers/findBeers"))
+                .andExpect(model().attributeExists("beer"));
+    }
+    
 }
