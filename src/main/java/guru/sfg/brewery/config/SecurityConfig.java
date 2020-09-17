@@ -7,16 +7,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import guru.sfg.brewery.security.SfgPasswordEncoderFactories;
 
 @Configuration
 @EnableWebSecurity
@@ -38,25 +30,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.and()
 			.httpBasic(); //use httpBasic authorization (Basic Auth), not secure unless use https
 	}
-/*  alternate way to code the above, seems more convoluted	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-			.authorizeRequests(authorize -> { //no authorization needed to access the following assets
-				authorize
-				.antMatchers("/","/webjars/**","/login","/resources/**").permitAll()
-				.antMatchers("/beers/find","/beers").permitAll()
-				.antMatchers(HttpMethod.GET, "/api/v1/beer/**").permitAll()
-				.mvcMatchers(HttpMethod.GET, "/api/v1/beerUpc/{upc}").permitAll(); //note we use mvcMatcher; works the same
-			})
-			.authorizeRequests() //any other resource access will need authorization
-			.anyRequest().authenticated()
-		.and()
-			.formLogin()
-		.and()
-			.httpBasic(); //use httpBasic authorization (Basic Auth), not secure unless use https
-	}
-*/
 
 	@Override
 	// create in memory userid/password for authentication
@@ -79,34 +52,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	// PasswordEncoder is required by AuthenticationManager
 	protected PasswordEncoder getPasswordEncoder() {
-		//return NoOpPasswordEncoder.getInstance();
-		//return new LdapShaPasswordEncoder();
-		//return new StandardPasswordEncoder();
-		//return new BCryptPasswordEncoder(16);
-		
-		// uses factories to generate a list of password encoders for delegation
-		return PasswordEncoderFactories.createDelegatingPasswordEncoder(); 
+		// use our custom factories to generate a list of password encoders for delegation
+		return SfgPasswordEncoderFactories.createDelegatingPasswordEncoder(); 
 	}
-	
-/*	//alternate way in creating users for authentication
-	@Override
-	@Bean
-	protected UserDetailsService userDetailsService() {
-		UserDetails admin = User.withDefaultPasswordEncoder()
-				.username("spring")
-				.password("guru")
-				.roles("ADMIN")
-				.build();
-		
-		UserDetails user = User.withDefaultPasswordEncoder()
-				.username("user")
-				.password("password")
-				.roles("USER")
-				.build();
-		
-		return new InMemoryUserDetailsManager(admin,user);
-	}	
-*/
 	
 	
 	
