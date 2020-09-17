@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -63,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.roles("ADMIN")
 			.and()
 			.withUser("user")
-			.password("password")
+			.password("{SSHA}Qjl/UNfq+Y7Zxg2Jx9AF/7h14pL+zBOTMDLJFw==")
 			.roles("USER")
 			.and()
 			.withUser("scott")
@@ -74,7 +75,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	// PasswordEncoder is required by AuthenticationManager
 	protected PasswordEncoder getPasswordEncoder() {
-		return NoOpPasswordEncoder.getInstance();
+		//return NoOpPasswordEncoder.getInstance();
+		return new LdapShaPasswordEncoder();
 	}
 	
 /*	//alternate way in creating users for authentication
