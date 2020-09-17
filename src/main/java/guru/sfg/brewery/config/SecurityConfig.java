@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -59,18 +60,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	// create in memory userid/password for authentication
+	// three users using three difference password encoding based on prefix indicator
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.inMemoryAuthentication()
 			.withUser("spring")
-			.password("guru")
+			.password("{sha256}f89e9d53b3f115efec93433621736df1da63b4fd18a22f5d012d6b80074408c0ed389c403808d7e3")
 			.roles("ADMIN")
 			.and()
 			.withUser("user")
-			.password("$2a$16$rQk2X/DCeN0lbU55ODew8eDkVGdegjJY7CRmYjy5LkLOxGj7xUNIm")
+			.password("{bcrypt}$2a$16$rQk2X/DCeN0lbU55ODew8eDkVGdegjJY7CRmYjy5LkLOxGj7xUNIm")
 			.roles("USER")
 			.and()
 			.withUser("scott")
-			.password("tiger")
+			.password("{ldap}{SSHA}HyCjZ2FM2KsAp6sYS4f9MQwyJFbjQBiBJIPksg==")
 			.roles("CUSTOMER")
 			;
 	}
@@ -80,7 +82,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		//return NoOpPasswordEncoder.getInstance();
 		//return new LdapShaPasswordEncoder();
 		//return new StandardPasswordEncoder();
-		return new BCryptPasswordEncoder(16);
+		//return new BCryptPasswordEncoder(16);
+		
+		// uses factories to generate a list of password encoders for delegation
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder(); 
 	}
 	
 /*	//alternate way in creating users for authentication
