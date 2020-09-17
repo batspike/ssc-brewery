@@ -65,6 +65,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.withUser("user")
 			.password("password")
 			.roles("USER")
+			.and()
+			.withUser("scott")
+			.password("tiger")
+			.roles("CUSTOMER")
 			;
 	}
 	@Bean
