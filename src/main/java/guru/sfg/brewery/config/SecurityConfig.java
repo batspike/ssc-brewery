@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
@@ -64,7 +65,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.roles("ADMIN")
 			.and()
 			.withUser("user")
-			.password("{SSHA}Qjl/UNfq+Y7Zxg2Jx9AF/7h14pL+zBOTMDLJFw==")
+			.password("543f87496c757c9a8bcb26b99241d6de51b43e10bb78614c0bfd8e8a1d1139be6115634009ac0600")
 			.roles("USER")
 			.and()
 			.withUser("scott")
@@ -76,7 +77,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	// PasswordEncoder is required by AuthenticationManager
 	protected PasswordEncoder getPasswordEncoder() {
 		//return NoOpPasswordEncoder.getInstance();
-		return new LdapShaPasswordEncoder();
+		//return new LdapShaPasswordEncoder();
+		return new StandardPasswordEncoder();
 	}
 	
 /*	//alternate way in creating users for authentication
