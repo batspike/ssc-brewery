@@ -12,7 +12,7 @@ public class SfgPasswordEncoderFactories {
 	public static PasswordEncoder createDelegatingPasswordEncoder() {
 		String encodingId = "bcrypt";
 		Map<String, PasswordEncoder> encoders = new HashMap<>();
-		encoders.put(encodingId, new BCryptPasswordEncoder());
+		encoders.put(encodingId, new BCryptPasswordEncoder(16));
 		encoders.put("ldap", new org.springframework.security.crypto.password.LdapShaPasswordEncoder());
 		encoders.put("noop", org.springframework.security.crypto.password.NoOpPasswordEncoder.getInstance());
 		encoders.put("sha256", new org.springframework.security.crypto.password.StandardPasswordEncoder());
